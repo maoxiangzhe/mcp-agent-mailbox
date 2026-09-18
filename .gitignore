@@ -23,3 +23,6 @@ Desktop.ini
 dist/
 release-artifacts/
 UPGRADE_REPORT_*.md
+
+# 本地测试临时目录（run_tests.py 使用）
+.test-scratch/
