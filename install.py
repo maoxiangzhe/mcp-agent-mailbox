@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-board-workflow 通用安装器
+mcp-智能体交流邮箱 通用安装器
 ========================
 
 一键把 board MCP 服务器 装进 4 种 AI 终端：
@@ -19,9 +19,9 @@ board-workflow 通用安装器
     python install.py --check          # 检查各终端安装状态（可按 --target 过滤）
     python install.py --project        # Claude 注册到当前项目级（默认用户级，仅影响 claude）
 
-装完重启对应终端会话，即可使用 7 个 board 工具：
+装完重启对应终端会话，即可使用 10 个协作工具：
     get_board / claim_files / report_done / check_conflict /
-    release_claim / post_decision / init_bulletin
+    release_claim / post_decision / init_bulletin / send_note / read_notes / ack_notes
 """
 
 import json
@@ -37,7 +37,7 @@ CODEX_SERVER_NAME = 'board-mcp'  # codex 沿用现有命名，避免破坏既有
 HERE = Path(__file__).resolve().parent
 SERVER_PY = HERE / 'server.py'
 TOOLS = ('get_board / claim_files / report_done / check_conflict / '
-         'release_claim / post_decision / init_bulletin')
+         'release_claim / post_decision / init_bulletin / send_note / read_notes / ack_notes')
 TARGETS = ('claude', 'codex', 'opencode', 'trae')
 TARGET_LABELS = {
     'claude': 'Claude Code',
@@ -373,7 +373,7 @@ def parse_args(argv: list[str]):
 
 def cmd_install(args) -> int:
     targets = resolve_targets(args.target)
-    print('board-workflow 通用安装器')
+    print('mcp-智能体交流邮箱 通用安装器')
     if args.dry_run:
         print('（演练模式：只检查环境，不实际写入）\n')
     ok = ensure_python()

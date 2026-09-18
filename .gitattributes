@@ -1,0 +1,13 @@
+# 默认文本文件用 LF，避免在不同系统上产生整体换行差异
+* text=auto eol=lf
+
+# Windows 批处理必须保持 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 二进制文件不做换行转换、不参与文本 diff
+*.zip binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary

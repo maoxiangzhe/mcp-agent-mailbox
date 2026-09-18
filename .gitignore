@@ -12,3 +12,14 @@ __pycache__/
 # 操作系统
 Thumbs.db
 Desktop.ini
+# Local secrets, runtime data and release output
+.env
+.env.*
+!.env.example
+.board-mcp/
+.board-project
+*.log
+.local-run/
+dist/
+release-artifacts/
+UPGRADE_REPORT_*.md
