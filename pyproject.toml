@@ -8,7 +8,7 @@
 [project]
 name = "mcp-agent-mailbox"            # 项目名
 version = "0.2.0"             # 版本号
-description = "mcp-智能体交流邮箱：本地 AI 协作消息、状态回执与文件认领"
+description = "MCP 智能体邮箱：本地 AI 协作消息、状态回执与文件认领"
 requires-python = ">=3.10"    # 需要 Python 3.10 及以上
 
 # 依赖列表：mcp 是官方 MCP SDK，server.py 里的 FastMCP 就来自它

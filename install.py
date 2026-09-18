@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-mcp-智能体交流邮箱 通用安装器
+MCP 智能体邮箱 通用安装器
 ========================
 
 一键把 board MCP 服务器 装进 4 种 AI 终端：
@@ -373,7 +373,7 @@ def parse_args(argv: list[str]):
 
 def cmd_install(args) -> int:
     targets = resolve_targets(args.target)
-    print('mcp-智能体交流邮箱 通用安装器')
+    print('MCP 智能体邮箱 通用安装器')
     if args.dry_run:
         print('（演练模式：只检查环境，不实际写入）\n')
     ok = ensure_python()
@@ -388,14 +388,14 @@ def cmd_install(args) -> int:
     print()
     if ok:
         print('[OK] 安装完成。重启对应终端会话后生效：')
-        print(f'  7 个 board 工具：{TOOLS}')
+        print(f'  10 个邮箱工具：{TOOLS}')
     else:
         print('[FAIL] 安装未完成，请按上面提示处理。')
     return 0 if ok else 1
 
 def cmd_check(args) -> int:
     targets = resolve_targets(args.target)
-    print('board-workflow 安装状态检查')
+    print('MCP 智能体邮箱 安装状态检查')
     try:
         import mcp  # noqa: F401
         print(f'  [环境]  mcp SDK: 已安装（{sys.executable}）')
