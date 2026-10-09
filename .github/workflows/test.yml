@@ -1,0 +1,27 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --extra dev
+      # 一次跑完：会话寻址邮箱测试（含真实 stdio 往返）+ 旧版兼容回归。
+      - run: uv run python -B run_tests.py
+      - name: 诊断命令自检
+        run: |
+          uv run python -m mcp_agent_mailbox.cli migrate
+          uv run python -m mcp_agent_mailbox.cli doctor
+          uv run python -m mcp_agent_mailbox.cli tools
+          uv run python -m mcp_agent_mailbox.cli adapters
+        env:
+          MAILBOX_HOME: ${{ runner.temp }}/mailbox-ci

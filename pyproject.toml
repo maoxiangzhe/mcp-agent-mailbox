@@ -1,0 +1,43 @@
+# pyproject.toml —— 项目元数据与依赖声明
+#
+# 运行方式：
+#   uv run python -m mcp_agent_mailbox.cli --help
+#   uv sync --locked && uv run pytest
+#
+# 依赖策略：
+#   - 对外协议依赖 MCP 官方 SDK；Python 3.10 安装配置另需轻量 tomli。
+#   - 存储使用标准库 sqlite3（WAL + 外键 + 显式事务），不引第三方 ORM：
+#     本项目数据模型小、事务边界明确，引入 ORM 只增加抽象而不解决问题。
+#   - 测试使用 pytest（仅开发期依赖），锁文件由 uv 维护。
+
+[project]
+name = "mcp-agent-mailbox"
+version = "0.3.1"
+description = "MCP 智能体邮箱：会话寻址的多智能体可靠消息与实时投递"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.5,<2",
+    "tomli>=2,<3; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+codex = ["websockets>=15,<17"]
+dev = [
+    "pytest>=8.0,<9",
+]
+
+[project.scripts]
+mcp-agent-mailbox = "mcp_agent_mailbox.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mcp_agent_mailbox*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# 临时根目录固定在仓库内：受限环境（沙箱/受控桌面）不允许在系统临时目录下创建
+# 嵌套目录，固定到仓库内才能稳定跑通，同时保证测试不写任何真实用户目录。
+addopts = "-q --basetemp=.test-scratch/pytest"

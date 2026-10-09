@@ -1,0 +1,23 @@
+# 备用装载方式：把它 include 进 $DSH_HOME/cordis.patch.yml
+#
+# Loader 方言里 "inserted relative paths are anchored beside their patch file"，
+# 所以这里的 name 用相对路径，指向同目录的 dsh-wake-bridge.js —— 插件文件全部留在
+# 工作区里，不必往 profile 的 node_modules 里装东西。
+#
+# 用法（需要一次工作区外的写入批准）：
+#   在 C:\Users\<你的用户名>\.dsh\cordis.patch.yml 里加：
+#
+#     - insert:
+#         - id: dsh-mailbox-wake-bridge-include
+#           name: cordis:include
+#           config:
+#             path: E:\zcz\modle\MCP\mcp-agent-mailbox\dsh-wake-plugin\dsh-wake-include.patch.yml
+#
+# 然后按 HMR 重载；若报 restart-required，就重启一次 DSH。
+- insert:
+    - id: dsh-mailbox-wake-bridge
+      name: './dsh-wake-bridge.js'
+      config:
+        host: 127.0.0.1
+        port: 8799
+        token: '__REPLACE_WITH_A_SHARED_TOKEN__'

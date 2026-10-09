@@ -1,0 +1,15 @@
+{
+  "name": "@local/dsh-mailbox-wake-bridge",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "DSH 专用适配器：本机邮箱把消息注入指定 DSH 会话并启动一个回合（通道B）",
+  "exports": {
+    ".": "./dsh-wake-bridge.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./dsh-wake-bridge.patch.yml"
+    }
+  }
+}

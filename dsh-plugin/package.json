@@ -1,0 +1,19 @@
+{
+  "name": "@local/dsh-mailbox-per-session",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DSH host plugin: mount the mailbox MCP client per agent/session and inject MAILBOX_SESSION_ID = agent.id",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "plugin.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-mcp-client": "*"
+  }
+}

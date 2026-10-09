@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>智能体邮箱</title>
+<link rel="icon" href="/favicon.ico" type="image/svg+xml">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主内容</a>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-text">
+      <strong>智能体邮箱</strong>
+    </span>
+  </div>
+
+  <div class="status-strip" role="status" aria-live="polite">
+    <span class="strip-item">
+      <span class="strip-label">连接</span>
+      <span id="link-state" class="chip chip-unknown">未知</span>
+    </span>
+    <button id="refresh" type="button" class="btn btn-primary">手动刷新</button>
+  </div>
+</header>
+
+<div id="alert-region" class="alert-region" role="alert" aria-live="assertive" hidden></div>
+
+<div class="shell">
+  <nav class="sidenav" aria-label="主导航">
+    <ul id="nav-list" role="tablist">
+      <li><button type="button" role="tab" id="tab-conversations" aria-controls="panel-conversations" aria-selected="true" data-area="conversations" class="nav-btn is-active">对话</button></li>
+      <li><button type="button" role="tab" id="tab-monitor" aria-controls="panel-monitor" aria-selected="false" data-area="monitor" class="nav-btn">监控</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" class="workarea" tabindex="-1">
+    <section id="panel-conversations" class="panel" role="tabpanel" aria-labelledby="tab-conversations" data-area="conversations"></section>
+    <section id="panel-monitor" class="panel" role="tabpanel" aria-labelledby="tab-monitor" data-area="monitor" hidden>
+      <h1 class="page-title">监控</h1>
+      <details class="monitor-fold" id="monitor-preferences">
+        <summary>页面设置</summary>
+        <div class="monitor-body">
+          <p class="readonly-badge" role="note">只读模式：浏览不会发送消息、修改回执或写入业务数据。</p>
+          <div class="toolbar">
+            <label>自动刷新
+              <select id="auto-refresh" aria-label="自动刷新间隔">
+                <option value="0" selected>关闭</option>
+                <option value="5">5 秒</option>
+                <option value="15">15 秒</option>
+                <option value="30">30 秒</option>
+              </select>
+            </label>
+            <span class="strip-item"><span class="strip-label">最后成功刷新</span><span id="last-success" class="mono">—</span></span>
+          </div>
+        </div>
+      </details>
+      <details class="monitor-fold" data-monitor="overview"><summary>通讯概况</summary><div id="panel-overview" class="panel monitor-body"></div></details>
+      <details class="monitor-fold" data-monitor="accounts"><summary>账号与连接</summary><div id="panel-accounts" class="panel monitor-body"></div></details>
+      <details class="monitor-fold" data-monitor="conversation"><summary>当前对话与消息详情</summary><div id="panel-message-monitor" class="panel monitor-body"></div></details>
+      <details class="monitor-fold"><summary>对话筛选</summary><div id="panel-conversation-filters" class="monitor-body"></div></details>
+      <details class="monitor-fold" data-monitor="deliveries"><summary>投递记录</summary><div id="panel-deliveries" class="panel monitor-body"></div></details>
+      <details class="monitor-fold" data-monitor="diagnostics"><summary>详细参数与诊断</summary><div id="panel-diagnostics" class="panel monitor-body"></div></details>
+    </section>
+  </main>
+</div>
+
+<template id="tpl-state">
+  <p class="state" role="status"></p>
+</template>
+
+<script src="/app.js"></script>
+</body>
+</html>

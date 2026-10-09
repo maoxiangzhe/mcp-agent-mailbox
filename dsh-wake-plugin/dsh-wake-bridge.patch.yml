@@ -1,0 +1,14 @@
+# DSH 唤醒桥（通道B）：把消息注入指定 DSH 会话并启动一个回合
+#
+# 这是 bundle 自己的 patch：package.json 里的 dsh.bundle.patch 指向它。
+# 只看格式：insert 一行，id 与 name 唯一，config 是该插件的配置。
+#
+# 注意：`token` 必须与邮箱侧的 MAILBOX_DSH_WAKE_TOKEN 完全一致，长度 >= 16。
+# 下面留的是占位值，装载前请改成你自己的随机串（例如 openssl rand -hex 24）。
+- insert:
+    - id: dsh-mailbox-wake-bridge
+      name: '@local/dsh-mailbox-wake-bridge'
+      config:
+        host: 127.0.0.1
+        port: 8799
+        token: '__REPLACE_WITH_A_SHARED_TOKEN__'

@@ -1,0 +1,9 @@
+# 离线自检产物
+_selftest/apply-log.jsonl
+_selftest/anchor/apply-log.jsonl
+
+# 插件运行期自证落点（由 DSH 进程写入）
+.runtime-state.json
+
+# 占位替身包（真机由 DSH 安装目录提供）
+node_modules/

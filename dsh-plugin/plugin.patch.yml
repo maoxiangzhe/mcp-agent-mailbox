@@ -1,0 +1,22 @@
+# 每会话邮箱插件的 patch（供 `cordis:include` 或 bundle 使用）。
+#
+# 方言要点（dsh-app-boot/lib/index.js:3540）：
+#   `name` 以 `./` 或 `../` 开头时，会**锚定在本 patch 文件所在目录**，
+#   于是插件文件留在工作区即可，不必往 profile 的 node_modules 里装东西。
+#
+# 而引用本文件的 `cordis:include` 行，其 `config.path` 是相对 **profile 目录**
+# 解析的（dsh-app-boot/lib/index.js:128），所以那边必须写绝对路径。
+- insert:
+    - id: mailbox-per-session
+      name: './index.js'
+      config:
+        # DSH 侧拉起邮箱 MCP 的命令；按本机实际路径修改。
+        command: 'E:\zcz\modle\MCP\mcp-agent-mailbox\.venv\Scripts\python.exe'
+        args: ['-m', 'mcp_agent_mailbox.cli', 'serve']
+        cwd: 'E:\zcz\modle\MCP\mcp-agent-mailbox'
+        serverName: mailbox
+        hostInstanceId: default
+        # 邮箱数据目录（与邮箱侧 MAILBOX_HOME 一致，决定用哪一份 SQLite）。
+        mailboxHome: 'C:\Users\mxz\.board-mcp'
+        toolCallTimeoutMs: 60000
+        failOnStartupError: false
