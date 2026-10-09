@@ -46,7 +46,7 @@ dsh-api-terminal-controller/lib/index.js:1007
 
 > 该包**打在 DSH 的 asar 归档内部**（`app.asar`），磁盘上不存在它的 `node_modules`
 > （profile 的 `node_modules` 只放 profile 自己装的 bundle）。实测：
-> `createRequire('C:\Users\mxz\.dsh\profiles\desktop/package.json')('@deepseek-ai/dsh-mcp-client')`
+> `createRequire('C:\Users\<user>\.dsh\profiles\desktop/package.json')('@deepseek-ai/dsh-mcp-client')`
 > → `Cannot find module`。
 
 DSH 自己能加载它，是因为它给 root include 装了 `HostResolvedRootInclude`，把裸包名交给

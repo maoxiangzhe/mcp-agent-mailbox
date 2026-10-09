@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import sys
@@ -42,7 +43,10 @@ from preflight import parse_patch  # noqa: E402  —— 复用同一套 patch �
 
 __all__ = ["build_migration", "main"]
 
-DEFAULT_PROFILE = Path(r"C:\Users\mxz\.dsh\profiles\desktop")
+DEFAULT_PROFILE = Path(
+    os.environ.get("DSH_PROFILE_DIR")
+    or str(Path.home() / ".dsh" / "profiles" / "desktop")
+)
 PLUGIN_PATCH = Path(__file__).resolve().parent / "plugin.patch.yml"
 INCLUDE_ID = "dsh-mailbox-per-session-include"
 DIRECT_ROW_ID = "mailbox-per-session"
@@ -144,6 +148,13 @@ def _direct_snippet() -> str:
     file URL（`dsh-app-boot/lib/index.js:3540`），绝对路径跨盘符也可用。
     """
     entry = str(Path(__file__).resolve().parent / "index.js")
+    # 下面这几个值都按**本机实际位置**推导，不再写死：
+    #   - 以前 command/cwd 写死 `E:\zcz\modle\MCP\mcp-agent-mailbox`，仓库换个目录就指错；
+    #   - 以前 mailboxHome 写死 `C:\Users\mxz\.board-mcp`，换个用户就指到别人的库。
+    root = Path(__file__).resolve().parents[1]
+    venv_python = root / ".venv" / "Scripts" / "python.exe"
+    command = str(venv_python if venv_python.is_file() else Path(sys.executable))
+    mailbox_home = Path.home() / ".board-mcp"
     return (
         "# 每会话邮箱插件：把邮箱 MCP 挂到每个 Agent 的 agent.ctx，并注入\n"
         "# MAILBOX_SESSION_ID = agent.id（身份由宿主给出，模型无法指定）。\n"
@@ -154,12 +165,12 @@ def _direct_snippet() -> str:
         "    - id: mailbox-per-session\n"
         f"      name: {entry}\n"
         "      config:\n"
-        "          command: 'E:\\zcz\\modle\\MCP\\mcp-agent-mailbox\\.venv\\Scripts\\python.exe'\n"
+        f"          command: '{command}'\n"
         "          args: [ '-m', 'mcp_agent_mailbox.cli', 'serve' ]\n"
-        "          cwd: 'E:\\zcz\\modle\\MCP\\mcp-agent-mailbox'\n"
+        f"          cwd: '{root}'\n"
         "          serverName: mailbox\n"
         "          hostInstanceId: default\n"
-        "          mailboxHome: 'C:\\Users\\mxz\\.board-mcp'\n"
+        f"          mailboxHome: '{mailbox_home}'\n"
         "          toolCallTimeoutMs: 60000\n"
         "          failOnStartupError: false\n"
     )

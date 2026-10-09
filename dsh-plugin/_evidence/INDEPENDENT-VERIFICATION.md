@@ -220,7 +220,7 @@ command exists: True     cwd exists: True     mailboxHome exists: True     entry
 2. 真实 loader 实例上 `loader.import` 的签名/返回形状（我的 stub 是 `async import(specifier)`）。
    作者注释引用 `dsh-app-boot/lib/index.js:3692-3701` 的 `HostResolvedRootInclude`——我**没有**
    逐行读那段来确认它可以被插件复用（时间/上下文所限）。
-3. `MAILBOX_HOME='C:\Users\mxz\.board-mcp'` 这个静态值对所有会话是否合适（多会话共用一个
+3. `MAILBOX_HOME='C:\Users\<user>\.board-mcp'` 这个静态值对所有会话是否合适（多会话共用一个
    SQLite 是否是有意为之）。**这是产品决策，不是代码缺陷。**
 4. 慢启动 MCP 服务器下，串行 `agent/created` 是否真的能在首轮对话前把工具同步好。
 5. 真实 `agent/disposed` 载荷（现有代码同时兼容 `event.agent.id` 与 `event.id`，稳妥）。

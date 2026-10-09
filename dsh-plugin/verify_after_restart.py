@@ -12,8 +12,10 @@
   V2 该账号有 `state=active` 且 `is_current=1` 的连接，`host_pid` 活着
      —— 说明托管进程真实存在（新插件为每个会话各起一个邮箱 MCP 子进程）。
   V3 该账号 `display_name` 不是旧的 `DSH-A`（旧账号是另一个原生会话）
-  V4 旧账号（`session-1a533e71-…`）不再有 active 连接
+  V4 旧账号（`$env:MAILBOX_LEGACY_SESSION`，历史值是 `session-1a533e71-…`）不再有
+     active 连接
      —— 说明 profile 根写死的那条已经被插件取代，没有残留抢占。
+     未设置该环境变量时本项跳过（打印 SKIP），不虚报 PASS。
   V5 每个 dsh 账号的 `native_session_id` 互不相同
      —— "一个会话一个账号"的直接检查。
   V6 报告全部 active 连接及其进程存活情况，便于人工核对"关掉一个会话只离线一个"。
@@ -40,8 +42,12 @@ import sys
 from ctypes import wintypes
 from pathlib import Path
 
-DEFAULT_DB = Path(os.environ.get("MAILBOX_HOME") or r"C:\Users\mxz\.board-mcp") / "mailbox.sqlite3"
-LEGACY_SESSION = "session-1a533e71-e3b1-4b1f-926e-7096cddabf85"
+DEFAULT_DB = Path(
+    os.environ.get("MAILBOX_HOME") or str(Path.home() / ".board-mcp")
+) / "mailbox.sqlite3"
+#: 迁移前写死在 profile 里的那个会话 ID（只用于对照，说明"注入成功"是什么样子）。
+#: 用环境变量 `MAILBOX_LEGACY_SESSION` 指定；留空则该对照项跳过（不虚报 PASS）。
+LEGACY_SESSION = os.environ.get("MAILBOX_LEGACY_SESSION", "")
 
 __all__ = ["main"]
 
@@ -98,7 +104,7 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"邮箱库   : {db}")
     print(f"本会话 ID: {session or '(未取到)'}")
-    print(f"旧写死值 : {LEGACY_SESSION}\n")
+    print(f"旧写死值 : {LEGACY_SESSION or '(未设置 MAILBOX_LEGACY_SESSION，跳过对照)'}\n")
 
     # 先看插件的自证落点：它直接回答"插件加载了吗、这个会话挂载了吗"，不用等日志。
     state_path = Path(__file__).resolve().parent / ".runtime-state.json"
@@ -150,7 +156,11 @@ def main(argv: list[str] | None = None) -> int:
         "V1.本会话有账号且身份由宿主注入",
         len(mine) == 1,
         f"account(session={session}) = {[a['account_id'] for a in mine]}"
-        + ("；注意：与旧写死值不同才算注入成功" if session != LEGACY_SESSION else ""),
+        + (
+            "；注意：与旧写死值不同才算注入成功"
+            if LEGACY_SESSION and session != LEGACY_SESSION
+            else ""
+        ),
     )
 
     active_for_mine = []
@@ -177,11 +187,14 @@ def main(argv: list[str] | None = None) -> int:
         c for c in connections
         if legacy and c["account_id"] == legacy[0]["account_id"] and c["state"] == "active"
     ]
-    check(
-        "V4.旧写死账号不再占着活跃连接",
-        not legacy_active,
-        f"旧账号 active 连接数 = {len(legacy_active)}（期望 0）",
-    )
+    if LEGACY_SESSION:
+        check(
+            "V4.旧写死账号不再占着活跃连接",
+            not legacy_active,
+            f"旧账号 active 连接数 = {len(legacy_active)}（期望 0）",
+        )
+    else:
+        print("[SKIP] V4.旧写死账号不再占着活跃连接：未设置 MAILBOX_LEGACY_SESSION，无对照值")
 
     dsh_accounts = [a for a in accounts if a["native_session_id"]]
     sessions = [a["native_session_id"] for a in dsh_accounts]

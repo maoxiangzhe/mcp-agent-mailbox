@@ -36,7 +36,7 @@ DSH 真实进程：
 ```
 
 ⇒ 机制完好；**真实 DSH 进程里当前没有活跃 Agent**（本会话的 Agent 不在该进程的注册表里，
-尽管它的会话文件 `C:\Users\mxz\.dsh\sessions\--E-zcz--\session-0c7151c0-…\` 持续更新）。
+尽管它的会话文件 `C:\Users\<user>\.dsh\sessions\--E-zcz--\session-0c7151c0-…\` 持续更新）。
 
 ---
 
@@ -83,8 +83,9 @@ B: pid=11272 session=e2e-session-B account=acc_01a11f6eb7817b399efc63117a5e7804
 
 ### 2. ⚠️ 多 DSH 进程并发时的 `MAILBOX_HOME` 冲突风险（新增发现）
 
-这台机器上**同时存在两个 `DeepSeek Harness` 进程**（22932 / 13936），而 `plugin.patch.yml`
-里的 `mailboxHome` 是**写死的** `'C:\Users\mxz\.board-mcp'`。若两个 DSH 进程都加载本插件，
+这台机器上**同时存在两个 `DeepSeek Harness` 进程**（22932 / 13936），而两边的
+`mailboxHome` 都**回落到同一个默认目录** `~/.board-mcp`（`plugin.patch.yml` 里不写死它，
+插件就不设 `MAILBOX_HOME`，由邮箱子进程用自己的默认值）。若两个 DSH 进程都加载本插件，
 两边各自的邮箱 MCP 子进程会**共用同一份 SQLite**：
 
 - 工程上通常没问题（WAL + 跨进程并发是这台库的既有工作模式，实测 43+ 条连接来自多个进程）；
@@ -159,6 +160,6 @@ cd E:\zcz\modle\MCP\mcp-agent-mailbox\dsh-plugin
 ## 六、回滚
 
 ```powershell
-Copy-Item "C:\Users\mxz\.dsh\profiles\desktop\cordis.patch.yml.bak-20261009-143439" `
-          "C:\Users\mxz\.dsh\profiles\desktop\cordis.patch.yml" -Force
+Copy-Item "C:\Users\<user>\.dsh\profiles\desktop\cordis.patch.yml.bak-20261009-143439" `
+          "C:\Users\<user>\.dsh\profiles\desktop\cordis.patch.yml" -Force
 ```

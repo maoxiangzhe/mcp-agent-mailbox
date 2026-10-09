@@ -17,6 +17,8 @@
         serverName: mailbox
         hostInstanceId: default
         # 邮箱数据目录（与邮箱侧 MAILBOX_HOME 一致，决定用哪一份 SQLite）。
-        mailboxHome: 'C:\Users\mxz\.board-mcp'
+        # 默认留空：插件不设 MAILBOX_HOME，邮箱子进程用自己默认的 `~/.board-mcp`，
+        # 换机器/换用户都不用改配置。要指向另一份库时再取消注释并填绝对路径。
+        # mailboxHome: 'C:\Users\<user>\.board-mcp'
         toolCallTimeoutMs: 60000
         failOnStartupError: false
